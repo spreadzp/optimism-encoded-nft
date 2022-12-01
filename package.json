@@ -1,5 +1,5 @@
 {
-  "name": "optimism-box",
+  "name": "encoded-nft-marketplace",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -20,17 +20,10 @@
     "exec:ovm": "truffle exec $script --config truffle-config.ovm.js --network $npm_config_network",
     "gan": "ganache -m 'furnace skill box crucial filter find imitate client usual nurse define elbow'"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/truffle-box/optimisim-box.git"
-  },
+  
   "keywords": [],
-  "author": "Faina Shalts <faina@trufflesuite.com>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/truffle-box/optimism-box/issues"
-  },
-  "homepage": "https://github.com/truffle-box/optimism-box#readme",
+  "author": "Paul K ",
+  "license": "MIT", 
   "devDependencies": {
     "@eth-optimism/plugins": "^0.0.20",
     "@truffle/hdwallet-provider": "^1.6.0",

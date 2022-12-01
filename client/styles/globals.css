@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.brand-color {
+  color: white;
+}
+
+.brand-bg {
+  background: #0f254d; 
+ 
+}
+
+.main-h {
+  height: 100%;
+  min-height: 100vh;;
+}
+
+.brand-btn {
+  background: #0f254d;
+}
+
+.brand-logo {
+  background-image: url('./../public/brand.png');
+  background-repeat: no-repeat;
+  height: 100px;
+  width: 130px;
+}
+
+.nav-align {
+  align-items: center
+} 
+ 
+.nav-btn:hover {
+  transform: translateY(-10px);
+  color:gold;
+}
+.create-form {
+  border: #fff6f0 dotted;
+}
+
+div.settings {
+  display:grid;
+  grid-template-columns: max-content max-content;
+  grid-gap:5px;
+}
+div.settings label       { text-align:right; }
+/* div.settings label:after { content: ":"; }​ */
+
+.mint-btn {
+  background: white;
+  color: #0f254d;
+  font-family: inherit;
+}
+
+.board-btn {
+  background: white;
+  color: #0f254d;
+  font-family: inherit;
+  width: 100%;
+}
+
+form {
+  overflow: hidden;
+}
+
+label-cls {
+  float: left;
+  width: 120px;
+  padding-right: 10px;
+}
+
+input-cls {
+  float: left;
+  width: calc(100% - 120px);
+}
+
+button-cls {
+  float: right;
+  width: calc(100% - 120px);
+}

@@ -6,6 +6,10 @@
   color: white;
 }
 
+pre, embed {
+  color: white;
+}
+
 .brand-bg {
   background: #0f254d; 
  
@@ -30,10 +34,15 @@
 .nav-align {
   align-items: center
 } 
- 
+
+.tab-assets {
+  cursor: pointer;
+}
 .nav-btn:hover {
-  transform: translateY(-10px);
-  color:gold;
+  transition: all .5s ease-in-out;
+  transform: scaleX(2);
+  transform: scaleY(2);
+  color:rgb(37 99 235);
 }
 .create-form {
   border: #fff6f0 dotted;
@@ -53,11 +62,15 @@ div.settings label       { text-align:right; }
   font-family: inherit;
 }
 
+.mint-btn:hover { 
+  font-family: cursive;
+  font-size: larger;
+}
+
 .board-btn {
   background: white;
   color: #0f254d;
-  font-family: inherit;
-  width: 100%;
+  font-family: inherit; 
 }
 
 form {
@@ -78,4 +91,8 @@ input-cls {
 button-cls {
   float: right;
   width: calc(100% - 120px);
+}
+
+.help-link:hover {
+  color: red;
 }

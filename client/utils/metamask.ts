@@ -73,7 +73,7 @@ export async function decryptPrivateKey(encryptedMessage: string, account: strin
 
     if (decryptErr) { console.error(decryptErr.message) }
     else {
-         console.log(`decryptedMessage: ${decryptedMessage}`)
+         // console.log(`decryptedMessage: ${decryptedMessage}`)
         return decryptedMessage
     }
 }
@@ -81,7 +81,7 @@ export async function decryptPrivateKey(encryptedMessage: string, account: strin
 export async function decryptUriFile(encryptedMessage: string, privateKey: string) {
     // console.log("🚀 ~ file: metamask.js ~ line 83 ~ decryptUriFile ~ encryptedMessage", encryptedMessage)
     try{
-        console.log(`encryptedMessage.length: ${encryptedMessage.length}`)
+        // console.log(`encryptedMessage.length: ${encryptedMessage.length}`)
         const parsedEncInfo = EthCrypto.cipher.parse(encryptedMessage)
         const message = await EthCrypto.decryptWithPrivateKey(
             privateKey, parsedEncInfo)

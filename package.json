@@ -13,7 +13,7 @@
     "compile:ovm": "rm -rf client/contracts/optimism-contracts && truffle compile --config truffle-config.ovm.js  --network development",
     "migrate:evm": "truffle migrate",
     "migrate:ovm": "rm -rf client/contracts/optimism-contracts && truffle migrate --skip-dry-run --config truffle-config.ovm.js --network development --reset",    
-    "migrate:goerly-ovm": "rm -rf client/contracts/optimism-contracts && truffle migrate --skip-dry-run --config truffle-config.ovm.js --network optimistic_goerli --reset",
+    "migrate:goerly-ovm": "rm -rf client/contracts/optimism-contracts && export NODE_OPTIONS=--openssl-legacy-provider && truffle migrate --skip-dry-run --config truffle-config.ovm.js --network optimistic_goerli --reset",
     "test:evm": "truffle test",
     "test:ovm": "truffle test --config truffle-config.ovm.js --network development",
     "exec:evm": "truffle exec",

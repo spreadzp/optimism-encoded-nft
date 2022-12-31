@@ -13284,12 +13284,12 @@
     "420": {
       "events": {},
       "links": {},
-      "address": "0xC530d5b6843ee41a261b9e9316d9f4d72EBE318b",
-      "transactionHash": "0x256900a4a5ba64b77a2bb6b64c948d41e557361db4948da6977ec8d622573684"
+      "address": "0xCd3e88efD1Ecc4ddDe004C63E59511955fb3184f", 
+      "transactionHash": "0xc51ad283f6853181053067e22124b846ea4268f1e91027cca01232fe555145a2"
     }
   },
   "schemaVersion": "3.4.10",
-  "updatedAt": "2022-11-30T21:47:26.060Z",
+  "updatedAt": "2022-12-10T17:43:39.293Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

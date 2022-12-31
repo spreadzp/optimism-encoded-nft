@@ -5,14 +5,14 @@ https://metaverse-spread.vercel.app/
 ```
 
 ## Inspiration 
- The use of NFTs helped owners establish ownership of content with a unique ID, but as soon as the content itself becomes popular, it is massively copied and NFTs are released with modified clones of the original content.
+ Using of NFTs helped owners establish ownership of content with a unique ID, but as soon as the content itself becomes popular, it is massively copied and NFTs are released with modified clones of the original content.
 Therefore, this project aims to protect content from such a phenomenon.
 Now only the NFT owner not only owns the attached content, but only the owner can view it!
 Content protection, implemented using a mixture of symmetric and asymmetric encryption
 ## The project is built on the basis of Nest.js, 2 smart contracts are used for issuing NFTs and for selling at auction
 ## Principle of operation of the marketplace of Encoded NFTs
 
-1) at the time of creating the NFT, the user selects using the UI content (image, video, sound, file, text) that will be the value for which buyers are willing to pay
+1) During the time of creating the NFT, the user selects using the UI content (image, video, sound, file, text) that will be the value for which buyers are willing to pay
 2) After selecting the content under the hood, a key pair is generated from farther PrivateKeyContent and PublicKeyContent
 which will be used for symmetric encryption and decryption of content
 3) PrivateKeyContent is encrypted using the asymmetric encryption method from the Metamask using the public key of the user account and a hash of the encrypted private key is obtained, this hash can only be decrypted using the private key of the user account by calling the decrypt method from the Metamask

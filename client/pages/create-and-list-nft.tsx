@@ -10,6 +10,7 @@ import { encryptData, getNewAccount } from '../utils/cypher'
 import { metamaskEncryptData } from '../utils/metamask'
 import { env } from './../next.config'
 import { getTemplateByTypeFile } from '../utils/common'
+import Loader from './loader'
 
 
 const auth =
@@ -25,7 +26,7 @@ const client = ipfsHttpClient({
 });
 
 export default function CreateItem() {
-  const [fileUrl, setFileUrl] = useState(null as null | string)
+  // const [fileUrl, setFileUrl] = useState(null as null | string)
   const [isUploadToIpfs, setIsUploadToIpfs] = useState(false)
   const [newPrivateKey, setNewPrivateKey] = useState('')
   const [enableMint, setEnableMint] = useState(false)
@@ -63,7 +64,6 @@ export default function CreateItem() {
         if (base64FileData && newPublicKey) {
 
           const encData = await metamaskEncryptData(base64FileData, newPublicKey)
-          console.log("🚀 ~ file: create-and-list-nft.tsx ~ line 66 ~ encodeFile ~ encData", encData)
           if (encData !== '') {
             setEncryptedData(encData)
           }
@@ -80,20 +80,17 @@ export default function CreateItem() {
     const file = e.target.files[0]
     generateKeys()
     createImage(file)
-
   }
 
   const defineTypeFile = (base64Code: string) => {
     return base64Code.split(';')[0].split('/')[0].split(":")[1];
   }
   const createImage = async (file: any) => {
-    //  console.log("🚀 ~ file: create-and-list-nft.tsx ~ line 69 ~ createImage ~ file", file)
     const reader = new FileReader()
     // eslint-disable-next-line
     reader.onload = async (e: any) => {
       // this.image = e.target.result
       const res = await reader.result?.toString()
-      console.log("🚀 ~ file: create-and-list-nft.tsx ~ line 93 ~ reader.onload= ~ res", res)
       if (res) {
         setBase64FileData(res)
         setTypeFile(defineTypeFile(res))
@@ -103,17 +100,16 @@ export default function CreateItem() {
   }
   const generateKeys = () => {
     const newIdentity = getNewAccount()
-    console.log("🚀 ~ file: create-and-list-nft.tsx ~ line 54 ~ generateKeys ~ newIdentity", newIdentity)
     setNewPrivateKey(newIdentity.privateKey)
     setNewPublicKey(newIdentity.publicKey)
     setNewAddress(newIdentity.address)
-  } 
+  }
 
   useEffect(() => {
     const { name, description, price } = formInput
     if (name && description && +price > 0 && encryptedData && encPrKByOwnerAddress) {
       setEnableMint(true)
-     
+
     } else {
       setEnableMint(false)
     }
@@ -124,20 +120,23 @@ export default function CreateItem() {
     if (!name || !description || !price || !encryptedData) {
       return
     } else {
-      // first, upload metadata to IPFS
 
-      const data = JSON.stringify({
-        name, description: `${typeFile};${description}`, image: encryptedData
-      })
       try {
-        if (data) {  
-          const added = await client.add(data)
-          console.log('added: ', added)
 
+        const uploadedEncImage = await client.add(encryptedData)
+        if (uploadedEncImage) {
+          const uploadedEncImageUrl = `https://caravan.infura-ipfs.io/ipfs/${uploadedEncImage.path}`
+          console.log("🚀 ~ file: create-and-list-nft.tsx:136 ~ uploadToIPFS ~ uploadedEncImageUrl", uploadedEncImageUrl)
+          const data = JSON.stringify({
+           
+            name, description: `${typeFile};${description}`, image: uploadedEncImageUrl
+          })
+          const added = await client.add(data)
           const url = `https://caravan.infura-ipfs.io/ipfs/${added.path}`
-          console.log("🚀 ~ file: create-and-list-nft.tsx ~ line 158 ~ uploadToIPFS ~ url", url) 
+          console.log("🚀 ~ file: create-and-list-nft.tsx ~ line 158 ~ uploadToIPFS ~ url", url)
           return url
         }
+
       } catch (error) {
         console.log('Error uploading file: ', error)
       } finally {
@@ -152,85 +151,80 @@ export default function CreateItem() {
     const provider = await web3Modal.connect()
     const web3 = new Web3(provider)
     setIsUploadToIpfs(true)
-    const url = await uploadToIPFS() 
-   
-      setIsProcessMint(true) 
-      const networkId = await web3.eth.net.getId() 
-      // Mint the NFT
-      const encodedNftContractAddress = ENCNFT.networks[`${networkId}` as keyof typeof ENCNFT.networks].address
-      const encodedNftContract = new web3.eth.Contract(ENCNFT.abi as any, encodedNftContractAddress)
-      const accounts = await web3.eth.getAccounts()
-      const marketPlaceContract = new web3.eth.Contract(Marketplace.abi as any, Marketplace.networks[`${networkId}` as keyof typeof Marketplace.networks].address)
-      let listingFee = await marketPlaceContract.methods.getListingFee().call()
-      listingFee = listingFee.toString() 
-      encodedNftContract.methods.mint(url, encPrKByOwnerAddress).send({
-        from: accounts[0], gasPrice: 10 * 10 ** 10,
-        gasLimit: 8000000
-      }).on('receipt', function (receipt: any) { 
-        // List the NFT
-        const tokenId = receipt.events.NFTMinted.returnValues[0];
-        console.log("🚀 ~ file: create-and-list-nft.tsx ~ line 199 ~ encodedNftContract.methods.mint ~ tokenId", tokenId)
-        if (tokenId) {
+    const url = await uploadToIPFS()
 
-          marketPlaceContract.methods.moveTokenForSell(tokenId, "Listing announce", Web3.utils.toWei(formInput.price, "ether"), encodedNftContractAddress)//Web3.utils.toWei(formInput.price, "ether"))
-            .send({ from: accounts[0], value: listingFee }).on('receipt', function () {
-              console.log('listed')
-              setIsProcessMint(false)
-              router.push('/')
-            });
-        }
-      }).on('error', (err: any) => {
-        console.log("🚀 ~ file: create-and-list-nft.tsx ~ line 200 ~ encodedNftContract.methods.mint ~ err", err)
-        setIsProcessMint(false)
-      }); 
+    setIsProcessMint(true)
+    const networkId = await web3.eth.net.getId()
+    // Mint the NFT
+    const encodedNftContractAddress = ENCNFT.networks[`${networkId}` as keyof typeof ENCNFT.networks].address
+    const encodedNftContract = new web3.eth.Contract(ENCNFT.abi as any, encodedNftContractAddress)
+    const accounts = await web3.eth.getAccounts()
+    const marketPlaceContract = new web3.eth.Contract(Marketplace.abi as any, Marketplace.networks[`${networkId}` as keyof typeof Marketplace.networks].address)
+    let listingFee = await marketPlaceContract.methods.getListingFee().call()
+    listingFee = listingFee.toString()
+    encodedNftContract.methods.mint(url, encPrKByOwnerAddress).send({
+      from: accounts[0], 
+    }).on('receipt', function (receipt: any) {
+      // List the NFT
+      const tokenId = receipt.events.NFTMinted.returnValues[0];
+      console.log("🚀 ~ file: create-and-list-nft.tsx ~ line 199 ~ encodedNftContract.methods.mint ~ tokenId", tokenId)
+      if (tokenId) {
+
+        marketPlaceContract.methods.moveTokenForSell(tokenId, "Listing announce", Web3.utils.toWei(formInput.price, "ether"), encodedNftContractAddress)//Web3.utils.toWei(formInput.price, "ether"))
+          .send({ from: accounts[0], value: listingFee }).on('receipt', function () {
+            console.log('listed')
+            setIsProcessMint(false)
+            router.push('/')
+          });
+      }
+    }).on('error', (err: any) => {
+      console.log("🚀 ~ file: create-and-list-nft.tsx ~ line 200 ~ encodedNftContract.methods.mint ~ err", err)
+      setIsProcessMint(false)
+    });
   }
 
 
-  const b64DecodeUnicode = (base64Str: string) => {
-    return Buffer.from(base64Str, 'base64').toString('utf-8')
-  }
   return (
-    <div className="flex justify-center main-h brand-bg">
-      <div className="flex flex-col  create-form border-rose-500 p-5"> 
+    <div className="flex items-start justify-center main-h brand-bg">
+      <div className="flex flex-col  create-form border-rose-500 p-5">
         <label htmlFor="name-nft" className='text-xl font-bold text-white' >NAME </label>
         <input
-        name="name-nft"
+          name="name-nft"
           placeholder="Asset Name"
           className="mb-5 border rounded p-4"
           onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
-        /> 
+        />
 
         <label htmlFor="description" className='text-xl font-bold text-white' >Description </label>
         <textarea
           placeholder="Asset Description" name="description"
           className="mb-5 border rounded p-4"
           onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
-        />  
+        />
         <label htmlFor="price" className='text-xl font-bold text-white' >Price </label>
         <input
-        name="price"
-         type="number"
+          name="price"
+          type="number"
           placeholder="Asset Price in Eth"
           className="mb-5 border rounded p-4"
           onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
-        />  
+        />
         {/* <label htmlFor="file" className='text-xl font-bold text-white' >Choose content for the NFT </label> */}
-          <input
+        <input
           name="file"
-            type="file" 
-            className="my-4"
-            onChange={onChange}
-          /> 
+          type="file"
+          className="my-4"
+          onChange={onChange}
+        />
         {
           base64FileData &&
           getTemplateByTypeFile(base64FileData, typeFile)
         }
-        {isUploadToIpfs && enableMint && <button type="button" className="font-bold mint-btn text-white rounded mt-10 p-4 shadow-lg" disabled>
-          <svg className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
-          </svg>
-          Uploading to IPFS...
-        </button>}
-        {!isUploadToIpfs  && enableMint && !isProcessMint && <button onClick={listNFTForSale} className="font-bold mint-btn rounded mt-10 p-4 shadow-lg">
+        {isUploadToIpfs && enableMint &&
+        <Loader />
+       
+        }
+        {!isUploadToIpfs && enableMint && !isProcessMint && <button onClick={listNFTForSale} className="font-bold mint-btn rounded mt-10 p-4 shadow-lg">
           Mint and list NFT
         </button>}
         {isProcessMint && enableMint && <button type="button" className="font-bold mint-btn text-white rounded mt-10 p-4 shadow-lg" disabled>Approve in Metamask</button>}
@@ -238,3 +232,5 @@ export default function CreateItem() {
     </div>
   )
 }
+ 
+        

@@ -73,7 +73,7 @@ export async function loadNFTs({typeAction, nftId}: LoadNftProps): Promise<Respo
            return null
          }
        }))
-       return {nfts, currentAddress, marketPlaceContract } 
+       return {nfts, currentAddress, marketPlaceContract, encNftContract } 
      } else {
       return {} as ResponseLoadNfts
     }

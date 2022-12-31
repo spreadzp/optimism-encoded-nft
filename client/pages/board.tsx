@@ -14,7 +14,7 @@ type BoardProps = {
 
 function Board({ nft, buyers }: BoardProps) {
     const router = useRouter()
-    const headerNames = ['#', 'Bet', 'Address', 'Message', 'Action']
+    const headerNames = ['#', 'Bet', 'Buyers addresses', 'Message', 'Action']
     const [marketPlaceContract, setMarketPlaceContract] = useState(null || {} as any)
     const [encodedNftContract, setEncodedNftContract] = useState(null || {} as any)
     const [isOwner, setIsOwner] = useState(false)
@@ -108,8 +108,8 @@ function Board({ nft, buyers }: BoardProps) {
                                                     <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
                                                         {item.goalOfPurchase}
                                                     </td>
-                                                    {item.buyerAddress === account && <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
-                                                        <button className="mt-4 w-full brand-color text-white font-bold py-2 px-12 rounded" onClick={() => makeAction(item)}>
+                                                    {item.buyerAddress === account && <td className="text-sm text-white font-light  whitespace-nowrap">
+                                                        <button className="board-btn rounded" onClick={() => makeAction(item)}>
                                                             Remove bet
                                                         </button>
                                                     </td>}

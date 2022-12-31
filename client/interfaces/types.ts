@@ -3,7 +3,7 @@ export interface NFTProps {
     totalSum?: number,
     buyers?: BuyersList[],
     price?: any,
-    tokenId?: number,
+    tokenId: number,
     seller?: string,
     owner?: string,
     image?: string,
@@ -35,7 +35,8 @@ export enum ACTOR {
 export interface ResponseLoadNfts {
     nfts: NFTProps[],
     currentAddress: string,
-    marketPlaceContract: any
+    marketPlaceContract: any,
+    encNftContract: any
 }
 
 export interface Web3InstanceProps { 

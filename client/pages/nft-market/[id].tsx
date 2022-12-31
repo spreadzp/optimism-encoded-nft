@@ -7,6 +7,7 @@ import { ACTOR, BuyersList, NFTProps } from '../../interfaces/types';
 import NftCard from '../nft-card';
 import { loadNFTs } from '../../utils/nft-commands';
 import { getWeb3Instance } from '../../utils/web3';
+import Loader from '../loader';
 
 
 function NftMarket() {
@@ -19,6 +20,7 @@ function NftMarket() {
   const [nftId, setNftId] = useState(+`${id?.toString()}`)
   const [formInput, updateFormInput] = useState({ price: '', address: '', publicKey: '', goalPurchase: '' })
   const [buyersList, setBuyersList] = useState(bList)
+  const [isBetting, setIsBetting] = useState(false)
 
   useEffect(() => {
     if (nftId) {
@@ -40,15 +42,17 @@ function NftMarket() {
   async function makeBet(nft: NFTProps) {
     const { price, address, publicKey, goalPurchase } = formInput;
     const { marketPlaceContract } = await getWeb3Instance()
+    setIsBetting(true)
     const resBet = await marketPlaceContract?.methods?.makeBet(nft.tokenId, publicKey, account, goalPurchase).send({
       from: account,
-      value: Web3.utils.toWei(price, "ether"), gasPrice: 10 * 10 ** 10,
-      gasLimit: 8000000
+      value: Web3.utils.toWei(price, "ether"), gasPrice: 1 * 10 ** 10,
+      // gasLimit: 8000000
     }).on('receipt', function () {
       console.log('make bet')
     });
 
     if (resBet) {
+      setIsBetting(false)
       router.push(`/`)
     }
   }
@@ -75,6 +79,8 @@ function NftMarket() {
                     <label htmlFor="bet" className='text-xl font-bold text-white' >Your bet for the NFT </label>
                     <input
                       name="bet"
+                      type="number"
+                      min={+nft.price}
                       placeholder="Your bet in Eth"
                       className="mt-2 border rounded p-4"
                       onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
@@ -91,7 +97,8 @@ function NftMarket() {
                       className="mt-2 border rounded p-4"
                       onChange={e => updateFormInput({ ...formInput, goalPurchase: e.target.value })}
                     />
-                    <button type="button" className="font-bold mint-btn text-white rounded mt-10 p-4 shadow-lg" onClick={() => makeBet(nft)}>Make bet</button>
+                    {isBetting ? <Loader /> :
+                      <button type="button" className="font-bold mint-btn text-white rounded mt-10 p-4 shadow-lg" onClick={() => makeBet(nft)}>Make bet</button>}
 
                   </div>}
               </div>
